@@ -301,3 +301,11 @@
     padding-bottom: 0;
 }
 
+#content {
+    padding-top: 15rem;
+}
+
+div#ct-header > .container {
+    max-width: 90% !important;
+}
+
