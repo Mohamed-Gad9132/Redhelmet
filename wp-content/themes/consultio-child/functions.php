@@ -77,6 +77,7 @@ add_action('wp_enqueue_scripts', 'consultio_enqueue_scripts');
 
 require_once get_stylesheet_directory() . '/inc/class-custom-post-types.php';
 require_once get_stylesheet_directory() . '/inc/custom-taxonomy.php';
+require_once get_stylesheet_directory() . '/inc/acf-data.php';
 
 Consultio_Child_Custom_Post_Types::get_instance();
 Consultio_Child_Custom_Taxonomies::get_instance();

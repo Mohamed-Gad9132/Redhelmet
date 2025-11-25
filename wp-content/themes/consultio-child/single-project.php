@@ -90,121 +90,119 @@ get_header();
                     <!-- Main Content -->
                     <div class="col-lg-8">
                         <!-- Overview -->
-                         <div class="content-section" data-aos="fade-up" data-aos-duration="800">
-                            <h2>Project Overview</h2>
-                            <p id="projectDescription">A landmark 45-story mixed-use development in the heart of Dubai's
-                                business district, requiring comprehensive fire protection engineering and life safety
-                                systems design.</p>
-                        </div>
+                        <?php
+                            $project_overview = get_field('project_overview');
+                                if( !empty($project_overview) ):
+                        ?>
+                             <div class="content-section">
+                                <h2 data-aos="fade-up" data-aos-duration="800">Project Overview</h2>
+                                <div data-aos="fade-up" data-aos-duration="500" id="projectDescription"><?= $project_overview ?></div>
+                            </div>
+                        <?php endif; ?>
 
                         <!-- Challenge -->
-                         <div class="content-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
-                            <h2>The Challenge</h2>
-                            <p id="projectChallenge">The project presented unique challenges due to its mixed-use
-                                nature, combining retail, office, and residential spaces across 45 floors. The
-                                building's innovative architectural design required creative solutions to meet both
-                                local and international fire safety standards while maintaining the architectural
-                                vision.</p>
-                        </div>
+                        <?php
+                            $the_challenge = get_field('the_challenge');
+                                if( !empty($the_challenge) ):
+                        ?>
+                             <div class="content-section">
+                                <h2 data-aos="fade-up" data-aos-duration="800" >The Challenge</h2>
+                                <div data-aos="fade-up" data-aos-duration="500" id="projectChallenge"><?= $the_challenge ?></div>
+                            </div>
+                        <?php endif; ?>
 
                         <!-- Solution -->
-                         <div class="content-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
-                            <h2>Our Solution</h2>
-                            <p id="projectSolution">Our team developed an integrated fire protection strategy
-                                incorporating advanced smoke control systems, multiple fire suppression technologies,
-                                and a comprehensive life safety plan. We utilized performance-based design approaches to
-                                optimize the fire protection systems while ensuring full compliance with UAE Fire and
-                                Life Safety Code.</p>
-                        </div>
+                        <?php
+                            $our_solution = get_field('our_solution');
+                                if( !empty($our_solution) ):
+                        ?>
+                             <div class="content-section">
+                                <h2 data-aos="fade-up" data-aos-duration="800" >Our Solution</h2>
+                                <div data-aos="fade-up" data-aos-duration="500" id="projectSolution"><?= $our_solution ?></div>
+                            </div>
+                        <?php endif; ?>
 
                         <!-- Services Provided -->
-                         <div class="content-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
-                            <h2>Services Provided</h2>
+                        <?php
+                            $services_provided = get_field('services_provided');
+                                if( !empty($services_provided) ):
+                        ?>
+                         <div class="content-section" data-aos="fade-up" data-aos-duration="800">
+                            <h2 data-aos="fade-up" data-aos-duration="800">Services Provided</h2>
                             <div id="servicesList" class="services-grid">
-                                <div class="service-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Fire Protection Engineering</span>
-                                </div>
-                                <div class="service-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Smoke Control System Design</span>
-                                </div>
-                                <div class="service-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Sprinkler System Design</span>
-                                </div>
-                                <div class="service-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Fire Alarm System Design</span>
-                                </div>
+                                <?php foreach( $services_provided as $service ): ?>
+                                    <div data-aos="fade-left" data-aos-duration="800" class="service-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span><?= $service['service_name'] ?></span>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
+                        <?php endif; ?>
 
                         <!-- Outcomes -->
-                         <div class="content-section" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
-                            <h2>Project Outcomes</h2>
+                        <?php
+                            $project_outcomes = get_field('project_outcomes');
+                                if( !empty($project_outcomes) ):
+                        ?>
+                         <div class="content-section" data-aos="fade-up" data-aos-duration="800">
+                            <h2 data-aos="fade-up" data-aos-duration="800">Project Outcomes</h2>
                             <div id="outcomesList">
-                                <div class="outcome-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Achieved full compliance with UAE Fire and Life Safety Code</span>
-                                </div>
-                                <div class="outcome-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Reduced overall fire protection system costs by 15% through optimization</span>
-                                </div>
-                                <div class="outcome-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Obtained timely approvals from Civil Defense authorities</span>
-                                </div>
-                                <div class="outcome-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>Successfully integrated systems with building automation</span>
-                                </div>
-                                <div class="outcome-item">
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    <span>Delivered comprehensive as-built documentation</span>
-                                </div>
+                                <?php foreach( $project_outcomes as $outcome ): ?>
+                                    <div data-aos="fade-left" data-aos-duration="800" class="outcome-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span><?= $outcome['project_outcome_item'] ?></span>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- Sidebar -->
-                     <div class="col-lg-4" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
-                         <div class="sidebar-info">
+                     <div class="col-lg-4" data-aos="fade-left" data-aos-duration="800">
+                         <div data-aos="fade-up" data-aos-duration="800" class="sidebar-info">
+
+                            <?php
+                                $project_information = get_field('project_information');
+                                    if( !empty($project_information) ):
+                            ?>
                             <h3>Project Information</h3>
 
-                            <div class="info-item">
-                                <div class="info-label">Client</div>
-                                <div class="info-value" id="projectClient">Premier Development Group</div>
-                            </div>
+                                <?php foreach ( $project_information as $information ): ?>
+                                    <div class="info-item">
+                                        <div class="info-label"><?= $information['project_info_item_title'] ?></div>
+                                        <div class="info-value" id="projectClient"><?= $information['project_info_item_description'] ?></div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
 
-                            <div class="info-item">
-                                <div class="info-label">Location</div>
-                                <div class="info-value" id="sidebarLocation">Dubai, UAE</div>
-                            </div>
 
-                            <div class="info-item">
-                                <div class="info-label">Project Size</div>
-                                <div class="info-value" id="sidebarSize">450,000 sq ft</div>
-                            </div>
+                            <div class="sidebar-cta" data-aos="flip-up" data-aos-duration="500">
+                                <?php
+                                    $side_cta_title = get_field('side_cta_title');
+                                    if( !empty( $side_cta_title ) ):
+                                ?>
+                                    <h4><?= $side_cta_title ?></h4>
+                                <?php endif; ?>
 
-                            <div class="info-item">
-                                <div class="info-label">Duration</div>
-                                <div class="info-value" id="projectDuration">18 months</div>
-                            </div>
+                                <?php
+                                    $side_cta_description = get_field('side_cta_description');
+                                    if( !empty( $side_cta_description ) ):
+                                ?>
+                                    <p><?= $side_cta_description ?></p>
+                                <?php endif; ?>
 
-                            <div class="info-item">
-                                <div class="info-label">Year Completed</div>
-                                <div class="info-value" id="sidebarYear">2024</div>
-                            </div>
+                                <?php
+                                    $side_cta_link = get_field('side_cta_link');
+                                    if( !empty( $side_cta_link ) ):
+                                ?>
+                                    <a href="<?= $side_cta_link['url'] ?>" class="btn btn-red">
+                                        <i class="fas fa-file-alt"></i>
+                                        <?= $side_cta_link['title'] ?>
+                                    </a>
+                                <?php endif; ?>
 
-                            <div class="sidebar-cta">
-                                <h4>Interested in Similar Work?</h4>
-                                <p>Let's discuss how we can help with your fire protection needs.</p>
-                                <button class="btn btn-red">
-                                    <i class="fas fa-file-alt"></i>
-                                    Request Consultation
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -217,13 +215,25 @@ get_header();
              <div class="container">
                  <div class="row justify-content-center">
                      <div class="col-lg-8 text-center" data-aos="zoom-in" data-aos-duration="900">
-                        <h2>Ready to Start Your Fire Protection Project?</h2>
-                        <p>
-                            Our team of experts is ready to provide strategic, innovative fire protection solutions for
-                            your next project.
-                        </p>
+                        <?php
+                            $bottom_cta_title = get_field('bottom_cta_title');
+                            if( !empty( $bottom_cta_title ) ):
+                        ?>
+                            <h2><?= $bottom_cta_title ?></h2>
+                        <?php endif; ?>
+                        <?php
+                            $bottom_cta_description = get_field('bottom_cta_description');
+                            if( !empty( $bottom_cta_description ) ):
+                        ?>
+                            <p><?= $bottom_cta_description ?></p>
+                        <?php endif; ?>
                         <div class="d-flex flex-wrap gap-3 justify-content-center">
-                            <a href="#" class="btn btn-white"><?= __('Contact Us Today', 'consultio-child') ?></a>
+                            <?php
+                                $bottom_cta_1_link = get_field('bottom_cta_1_link');
+                                if( !empty($bottom_cta_1_link) ):
+                            ?>
+                                <a href="<?= $bottom_cta_1_link['url'] ?>" class="btn btn-white"><?= $bottom_cta_1_link['title'] ?></a>
+                            <?php endif; ?>
                             <a href="<?= site_url() . '/projects' ?>" class="btn btn-outline-white"><?= __('View More Projects', 'consultio-child') ?></a>
                         </div>
                     </div>
