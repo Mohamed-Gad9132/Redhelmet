@@ -81,4 +81,82 @@ require_once get_stylesheet_directory() . '/inc/acf-data.php';
 
 Consultio_Child_Custom_Post_Types::get_instance();
 Consultio_Child_Custom_Taxonomies::get_instance();
+
+
+
+
+/**
+ * Check if a post has a translation in TranslatePress database.
+ */
+function consultio_child_has_translation($post_id, $current_lang, $default_lang) {
+    global $wpdb;
     
+    if (!$post_id) return false;
+    
+    $post = get_post($post_id);
+    if (!$post || empty($post->post_title)) return false;
+    
+    // Table name format: wp_trp_dictionary_fr_fr_en_us
+    $table = $wpdb->prefix . 'trp_dictionary_' . strtolower($current_lang) . '_' . strtolower($default_lang);
+    
+    // Check if table exists to avoid errors
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table'") != $table) {
+        return false;
+    }
+    
+    // Check if title is translated
+    // status != 0 means translated (2=human, 1=auto)
+    $query = $wpdb->prepare(
+        "SELECT id FROM $table WHERE original = %s AND status != 0 AND translated != '' LIMIT 1",
+        $post->post_title
+    );
+    
+    return (bool) $wpdb->get_var($query);
+}
+
+add_filter('body_class', function ($classes) {
+
+    // Check if TranslatePress is active
+    if (!defined('TRP_PLUGIN_VERSION')) {
+        return $classes;
+    }
+
+    // Get current language
+    $current_lang = function_exists('trp_get_current_language')
+        ? trp_get_current_language()
+        : '';
+
+    // Get default language
+    $default_lang = get_option('trp_settings')['default_language'] ?? '';
+
+    // If NOT default language → it's a translated view
+    if ($current_lang && $default_lang && $current_lang !== $default_lang) {
+        
+        $is_translated = false;
+
+        if (is_singular()) {
+            global $post;
+            if ($post && consultio_child_has_translation($post->ID, $current_lang, $default_lang)) {
+                $is_translated = true;
+            }
+        } else {
+            // For archives, we assume it's translated if we are in the language view
+            // or we can choose to NOT add the class. 
+            // Based on user request "if the post or page has translation", we'll default to true for non-singular 
+            // to avoid breaking archives, or false if they want strict check.
+            // Let's assume true for archives to be safe, as they are usually auto-generated.
+            $is_translated = true; 
+        }
+
+        if ($is_translated) {
+            $classes[] = 'is-translated';
+        }
+        
+        $classes[] = 'lang-' . esc_attr($current_lang); // optional: lang-ar, lang-fr, etc.
+    } else {
+        $classes[] = 'is-default-language';
+    }
+
+    return $classes;
+});
+ 

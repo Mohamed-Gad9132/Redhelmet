@@ -23,9 +23,16 @@ get_header();
         </nav>
 
         <!-- Hero Image -->
-        <section class="hero-image-section" data-aos="fade-up" data-aos-duration="900">
+        <?php
+            $project_main_image = get_field('project_main_image');
+            $bg_image = '';
+            if( empty($project_main_image) || !isset($project_main_image) ):
+                $bg_image = get_stylesheet_directory_uri() . '/assets/images/logo-gray.png';
+            endif;
+
+        ?>
+        <section class="hero-image-section" data-aos="fade-up" data-aos-duration="900" style="background-image: url(<?= $bg_image ?>)">
             <?php
-                $project_main_image = get_field('project_main_image');
                 if( !empty($project_main_image) ):
             ?>
                 <img id="heroImageBanner"
@@ -64,7 +71,7 @@ get_header();
                         ?>
                             <div class="hero-meta-item">
                                 <i class="fas fa-calendar-alt"></i>
-                                <span id="projectYear"><?= date('Y', strtotime($project_year)) ?></span>
+                                <span id="projectYear"><?= $project_year ?></span>
                             </div>
                         <?php endif; ?>
 

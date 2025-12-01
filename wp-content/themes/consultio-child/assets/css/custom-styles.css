@@ -314,8 +314,8 @@ div#ct-header > .container {
 
 /* Hero Section */
 .hero-section {
-    background: linear-gradient(to bottom right, var(--red-primary), var(--red-dark));
-    color: white;
+    background: transparent;
+    color: var(--red-dark);
     padding: 6rem 0;
 }
 
@@ -323,7 +323,7 @@ div#ct-header > .container {
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    color: var(--red-light);
+    color: var(--red-primary);
 }
 
 .hero-section p {
@@ -352,6 +352,9 @@ div#ct-header > .container {
     aspect-ratio: 4/3;
     margin-bottom: 1rem;
     background-color: #f3f4f6;
+    background-position: center;
+    background-size: 80%;
+    background-repeat: no-repeat;
 }
 
 .project-image {
@@ -473,4 +476,50 @@ body.archive.post-type-archive.post-type-archive-project #content {
 
 .text-muted {
     margin: 0 1rem;
+}
+
+
+h2.sptp-section-title {
+    display: none;
+}
+
+.sptp-member-avatar .sptp-member-avatar-img.zoom_in:hover img {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+span.sptp-member-avatar-img {
+    transition: all 0.5s ease-in-out;
+}
+
+@media screen and (min-width: 1200px){
+    .ct-main-menu > li {
+        margin: 0 9px !important;
+    }
+
+}
+
+div#ct-header > .container > .row {
+    display: flex !important;
+    flex-flow: row;
+}
+
+
+section.hero-image-section {
+    background: var(--red-light);
+    background-size: 55%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.post-type-archive-project section.cta-section p.text-muted.mb-4 {
+    color: var(--red-light) !important;
+}
+
+.post-type-archive-project section.cta-section button.btn.btn-red {
+    width: auto !important;
+}
+
+nav.trp-language-switcher.trp-floating-switcher {
+    display: none;
 }
