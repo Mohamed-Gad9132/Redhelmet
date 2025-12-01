@@ -29,6 +29,10 @@ get_header();
                 <?php if ( have_posts() ) : ?>
                     <?php while ( have_posts() ) : the_post();
                         $project_image = get_field('project_main_image');
+                        $bg_image = '';
+                        if( empty($project_image) || !isset($project_image) ):
+                            $bg_image = get_stylesheet_directory_uri() . '/assets/images/logo-gray  .png';
+                        endif;
                         $project_location = get_field('project_location');
                         $project_year_date = get_field('project_year');
                         $project_year = '';
@@ -46,7 +50,7 @@ get_header();
                     ?>
                     <div class="col-md-6 col-lg-4">
                         <a href="<?php the_permalink(); ?>" class="project-card">
-                            <div class="project-image-wrapper">
+                            <div class="project-image-wrapper" style="background-image: url(<?= $bg_image ?>)">
                                 <?php if ( $project_image ) : ?>
                                     <img src="<?php echo esc_url( $project_image ); ?>"
                                          alt="<?php the_title_attribute(); ?>"

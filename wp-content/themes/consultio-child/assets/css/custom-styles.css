@@ -352,6 +352,9 @@ div#ct-header > .container {
     aspect-ratio: 4/3;
     margin-bottom: 1rem;
     background-color: #f3f4f6;
+    background-position: center;
+    background-size: 80%;
+    background-repeat: no-repeat;
 }
 
 .project-image {
