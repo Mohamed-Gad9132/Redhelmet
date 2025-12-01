@@ -474,3 +474,18 @@ body.archive.post-type-archive.post-type-archive-project #content {
 .text-muted {
     margin: 0 1rem;
 }
+
+
+h2.sptp-section-title {
+    display: none;
+}
+
+.sptp-member-avatar .sptp-member-avatar-img.zoom_in:hover img {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
+span.sptp-member-avatar-img {
+    transition: all 0.5s ease-in-out;
+}
+

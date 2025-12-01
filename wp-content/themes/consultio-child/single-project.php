@@ -64,7 +64,7 @@ get_header();
                         ?>
                             <div class="hero-meta-item">
                                 <i class="fas fa-calendar-alt"></i>
-                                <span id="projectYear"><?= date('Y', strtotime($project_year)) ?></span>
+                                <span id="projectYear"><?= $project_year ?></span>
                             </div>
                         <?php endif; ?>
 
