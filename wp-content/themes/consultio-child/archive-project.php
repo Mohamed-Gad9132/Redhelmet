@@ -12,8 +12,8 @@ get_header();
         <div class="container">
             <div class="row">
                 <div class="col-lg-10">
-                    <h1>Our Projects</h1>
-                    <p>
+                    <h1 data-aos="fade-up" data-aos-duration="900">Our Projects</h1>
+                    <p data-aos="fade-up" data-aos-duration="900">
                         Explore our portfolio of successful fire protection and life safety projects across the Middle East.
                         Each project demonstrates our commitment to innovation, compliance, and exceptional client service.
                     </p>
@@ -31,7 +31,7 @@ get_header();
                         $project_image = get_field('project_main_image');
                         $bg_image = '';
                         if( empty($project_image) || !isset($project_image) ):
-                            $bg_image = get_stylesheet_directory_uri() . '/assets/images/logo-gray  .png';
+                            $bg_image = get_stylesheet_directory_uri() . '/assets/images/logo-gray.png';
                         endif;
                         $project_location = get_field('project_location');
                         $project_year_date = get_field('project_year');
@@ -49,7 +49,7 @@ get_header();
                         }
                     ?>
                     <div class="col-md-6 col-lg-4">
-                        <a href="<?php the_permalink(); ?>" class="project-card">
+                        <a href="<?php the_permalink(); ?>" class="project-card" data-aos="fade-up" data-aos-duration="1000">
                             <div class="project-image-wrapper" style="background-image: url(<?= $bg_image ?>)">
                                 <?php if ( $project_image ) : ?>
                                     <img src="<?php echo esc_url( $project_image ); ?>"
@@ -111,10 +111,15 @@ get_header();
                     <p class="text-muted mb-4">
                         Contact us today to discuss how our fire protection expertise can add value to your next project.
                     </p>
-                    <button class="btn btn-red">Get In Touch</button>
+                    <a href="<?= site_url() ?>/contact" class="btn btn-red">Get In Touch</a>
                 </div>
             </div>
         </div>
     </section>
+
+    <?php
+        // Reset postdata
+        wp_reset_postdata();
+    ?>
 
 <?php get_footer(); ?>

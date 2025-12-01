@@ -27,9 +27,9 @@ get_header();
             $project_main_image = get_field('project_main_image');
             $bg_image = '';
             if( empty($project_main_image) || !isset($project_main_image) ):
-                $bg_image = get_stylesheet_directory_uri() . '/assets/images/logo-gray  .png';
+                $bg_image = get_stylesheet_directory_uri() . '/assets/images/logo-gray.png';
             endif;
-            var_dump($bg_image);
+
         ?>
         <section class="hero-image-section" data-aos="fade-up" data-aos-duration="900" style="background-image: url(<?= $bg_image ?>)">
             <?php
