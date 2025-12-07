@@ -159,4 +159,59 @@ add_filter('body_class', function ($classes) {
 
     return $classes;
 });
- 
+
+
+
+add_theme_support('learndash');
+
+/**
+ * Filter LearnDash course archive (sfwd-courses) by topic, level and format.
+ */
+function consultio_child_filter_learndash_courses_archive( $query ) {
+    if ( is_admin() || ! $query->is_main_query() ) {
+        return;
+    }
+
+    if ( ! is_post_type_archive( 'sfwd-courses' ) ) {
+        return;
+    }
+
+    $tax_query  = array();
+    $meta_query = array();
+
+    // Filter by LearnDash course category taxonomy if set.
+    if ( isset( $_GET['course_cat'] ) && $_GET['course_cat'] !== '' && taxonomy_exists( 'ld_course_category' ) ) {
+        $tax_query[] = array(
+            'taxonomy' => 'ld_course_category',
+            'field'    => 'slug',
+            'terms'    => sanitize_text_field( wp_unslash( $_GET['course_cat'] ) ),
+        );
+    }
+
+    // Filter by course level (stored as meta).
+    if ( isset( $_GET['course_level'] ) && $_GET['course_level'] !== '' ) {
+        $meta_query[] = array(
+            'key'     => 'course_level',
+            'value'   => sanitize_text_field( wp_unslash( $_GET['course_level'] ) ),
+            'compare' => '=',
+        );
+    }
+
+    // Filter by delivery format (ACF field).
+    if ( isset( $_GET['delivery_format'] ) && $_GET['delivery_format'] !== '' ) {
+        $meta_query[] = array(
+            'key'     => 'course_delivery_format',
+            'value'   => sanitize_text_field( wp_unslash( $_GET['delivery_format'] ) ),
+            'compare' => '=',
+        );
+    }
+
+    if ( ! empty( $tax_query ) ) {
+        $query->set( 'tax_query', $tax_query );
+    }
+
+    if ( ! empty( $meta_query ) ) {
+        $query->set( 'meta_query', $meta_query );
+    }
+}
+add_action( 'pre_get_posts', 'consultio_child_filter_learndash_courses_archive' );
