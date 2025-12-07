@@ -925,3 +925,25 @@ a.course-card {
 body.wp-singular.sfwd-courses-template-default.single.single-sfwd-courses div#content {
     padding-top: 0;
 }
+
+a.user-login span {
+    display: none;
+}
+
+a.user-login span.link-icon {
+    display: initial !important;
+}
+
+a.user-login span.link-icon i {
+    color: #fff;
+    border: 1px solid #fff;
+    padding: 10px;
+    border-radius: 100px;
+    width: 35px;
+    height: 35px;
+}
+
+a.user-login:hover span.link-icon i {
+    background: #fff;
+    color: var(--red-primary);
+}

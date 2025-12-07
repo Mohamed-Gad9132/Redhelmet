@@ -272,9 +272,14 @@ if ( function_exists( 'sfwd_lms_has_access' ) ) {
                             // Logic for button display
                             if ( ! is_user_logged_in() ) :
                                 $registration_url = learndash_registration_page_get_id();
-                                var_dump( $registration_url );
+                                // get the registration page url
+                                $registration_page = get_post( $registration_url );
+                                $registration_page_url = get_permalink( $registration_page );
+                                // add the course id to the url
+                                $registration_page_url = add_query_arg( 'course_id', $course_id, $registration_page_url );
+                                
                                 ?>
-                                <a href="<?php echo esc_url( $registration_url ) ); ?>" class="btn btn-red btn-enroll-course">
+                                <a href="<?php echo esc_url( $registration_page_url ); ?>" class="btn btn-red btn-enroll-course">
                                     <?php esc_html_e( 'Login to Enroll', 'consultio-child' ); ?>
                                 </a>
                                 <?php
