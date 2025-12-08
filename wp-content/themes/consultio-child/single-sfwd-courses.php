@@ -174,26 +174,6 @@ if ( function_exists( 'sfwd_lms_has_access' ) ) {
                         </div>
                     <?php endif; ?>
 
-                    <!-- LearnDash Course Content (modules, lessons, topics) -->
-                    <div class="content-section">
-                        <h2 data-aos="fade-up" data-aos-duration="800">Course curriculum</h2>
-                        <div data-aos="fade-up" data-aos-duration="500" class="course-curriculum">
-                            <?php
-                            // Use LearnDash shortcode to display course content (safest approach).
-                            if ( function_exists( 'do_shortcode' ) ) {
-                                echo do_shortcode( '[ld_course_content course_id="' .  $course_id  . '"]' );
-                            } else {
-                                // Manual fallback: display course steps if LearnDash is active.
-                                if ( function_exists( 'learndash_get_course_steps' ) ) {
-                                    $course_steps = learndash_get_course_steps( $course_id );
-                                    if ( ! empty( $course_steps ) ) {
-                                        echo '<p>' . esc_html__( 'This course contains structured lessons and topics. Please enroll to access the full curriculum.', 'consultio-child' ) . '</p>';
-                                    }
-                                }
-                            }
-                            ?>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Sidebar -->
