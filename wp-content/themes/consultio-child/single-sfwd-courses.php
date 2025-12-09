@@ -249,14 +249,22 @@ if ( function_exists( 'sfwd_lms_has_access' ) ) {
                             </div>
 
                             <?php
+
+                            // Check if course is linked to a WooCommerce product
+                            if ( class_exists( 'WooCommerce' ) ) {
+                                $product_id = get_product_id_by_course_id( $course_id );
+                                if ( $product_id ) {
+                                    $enroll_url = wc_get_cart_url() . '?add-to-cart=' . $product_id;
+                                }
+                            }
+
+
                             // Logic for button display
                             if ( ! is_user_logged_in() ) :
                                 $registration_url = learndash_registration_page_get_id();
                                 // get the registration page url
                                 $registration_page = get_post( $registration_url );
                                 $registration_page_url = get_permalink( $registration_page );
-                                // add the course id to the url
-                                $registration_page_url = add_query_arg( 'course_id', $course_id, $registration_page_url );
                                 
                                 ?>
                                 <a href="<?php echo esc_url( $registration_page_url ); ?>" class="btn btn-red btn-enroll-course">
@@ -288,28 +296,6 @@ if ( function_exists( 'sfwd_lms_has_access' ) ) {
                                     $button_text = __( 'Buy This Course', 'consultio-child' );
                                 }
 
-                                // Check if course is linked to a WooCommerce product
-                                if ( class_exists( 'WooCommerce' ) ) {
-                                    $product_id = get_post_meta( $course_id, '_related_product', true );
-                                    if ( empty( $product_id ) ) {
-                                        // Try to find product by course ID relationship
-                                        $products = wc_get_products( array(
-                                            'meta_key'   => '_related_course',
-                                            'meta_value' => $course_id,
-                                            'limit'      => 1,
-                                        ) );
-                                        if ( ! empty( $products ) ) {
-                                            $product_id = $products[0]->get_id();
-                                        }
-                                    }
-                                    
-                                    if ( ! empty( $product_id ) ) {
-                                        $product = wc_get_product( $product_id );
-                                        if ( $product ) {
-                                            $enroll_url = $product->get_permalink();
-                                        }
-                                    }
-                                }
                                 ?>
                                 <a href="<?php echo esc_url( $enroll_url ); ?>" class="btn btn-red btn-enroll-course">
                                     <?php echo esc_html( $button_text ); ?>
