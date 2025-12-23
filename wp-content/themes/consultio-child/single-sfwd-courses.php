@@ -52,6 +52,9 @@ if ( function_exists( 'sfwd_lms_has_access' ) ) {
     $course_progress = learndash_user_get_course_progress( $user_id, $course_id );
     $is_enrolled = ! empty( $course_progress );
 }
+
+$lessons = learndash_get_course_lessons_list( $course_id, $user_id );
+
 ?>
 
 <main id="primary" class="site-main single-course-wrapper">
@@ -144,6 +147,39 @@ if ( function_exists( 'sfwd_lms_has_access' ) ) {
                         </div>
                     <?php endif; ?>
 
+                    <?php
+
+                    if ( ! empty( $lessons ) ) : ?>
+
+                        <div class="ld-course-lessons">
+                            <h3>Course Lessons</h3>
+
+                            <ul class="lessons-list">
+                                <?php foreach ( $lessons as $lesson ) :
+
+                                    $lesson_id    = $lesson['post']->ID;
+                                    $is_available = $lesson['is_available'];
+                                    $lesson_link  = get_permalink( $lesson_id );
+                                    ?>
+
+                                    <li class="lesson-item <?php echo $is_available ? 'unlocked' : 'locked'; ?>">
+
+                                        <?php if ( $is_available ) : ?>
+                                            <a href="<?php echo esc_url( $lesson_link ); ?>">
+                                                <?php echo esc_html( get_the_title( $lesson_id ) ); ?>
+                                            </a>
+                                        <?php else : ?>
+                                            <span class="lesson-locked"> <?php echo esc_html( get_the_title( $lesson_id ) ); ?> </span>
+                                        <?php endif; ?>
+
+                                    </li>
+
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+
+                    <?php endif; ?>
+
                     <!-- Key Outcomes -->
                     <?php if ( $key_outcomes ) : ?>
                         <div class="content-section">
@@ -174,26 +210,6 @@ if ( function_exists( 'sfwd_lms_has_access' ) ) {
                         </div>
                     <?php endif; ?>
 
-                    <!-- LearnDash Course Content (modules, lessons, topics) -->
-                    <div class="content-section">
-                        <h2 data-aos="fade-up" data-aos-duration="800">Course curriculum</h2>
-                        <div data-aos="fade-up" data-aos-duration="500" class="course-curriculum">
-                            <?php
-                            // Use LearnDash shortcode to display course content (safest approach).
-                            if ( function_exists( 'do_shortcode' ) ) {
-                                echo do_shortcode( '[ld_course_content course_id="' .  $course_id  . '"]' );
-                            } else {
-                                // Manual fallback: display course steps if LearnDash is active.
-                                if ( function_exists( 'learndash_get_course_steps' ) ) {
-                                    $course_steps = learndash_get_course_steps( $course_id );
-                                    if ( ! empty( $course_steps ) ) {
-                                        echo '<p>' . esc_html__( 'This course contains structured lessons and topics. Please enroll to access the full curriculum.', 'consultio-child' ) . '</p>';
-                                    }
-                                }
-                            }
-                            ?>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Sidebar -->
@@ -269,35 +285,29 @@ if ( function_exists( 'sfwd_lms_has_access' ) ) {
                             </div>
 
                             <?php
+
+                            // Check if course is linked to a WooCommerce product
+                            if ( class_exists( 'WooCommerce' ) ) {
+                                $product_id = get_product_id_by_course_id( $course_id );
+                                if ( $product_id ) {
+                                    $wc_enroll_url = wc_get_cart_url() . '?add-to-cart=' . $product_id;
+                                }
+                            }
+
+
                             // Logic for button display
                             if ( ! is_user_logged_in() ) :
                                 $registration_url = learndash_registration_page_get_id();
                                 // get the registration page url
                                 $registration_page = get_post( $registration_url );
                                 $registration_page_url = get_permalink( $registration_page );
-                                // add the course id to the url
-                                $registration_page_url = add_query_arg( 'course_id', $course_id, $registration_page_url );
                                 
                                 ?>
                                 <a href="<?php echo esc_url( $registration_page_url ); ?>" class="btn btn-red btn-enroll-course">
                                     <?php esc_html_e( 'Login to Enroll', 'consultio-child' ); ?>
                                 </a>
-                                <?php
-                            elseif ( $is_enrolled ) :
-                                ?>
-                                <a href="<?php echo esc_url( get_permalink( $course_id ) ); ?>" class="btn btn-red btn-enroll-course">
-                                    <?php esc_html_e( 'Continue Course', 'consultio-child' ); ?>
-                                </a>
-                                <p class="course-sidebar-note" style="margin-top: 20px;">
-                                    Need this course for your whole team? Get in touch with our training specialists
-                                    for group training options and tailored learning paths.
-                                </p>
-
-                                <a href="<?php echo esc_url( site_url( '/contact' ) ); ?>" class="btn btn-red">
-                                    Talk to Training Team
-                                </a>
-                                <?php
-                            else :
+                            <?php
+                            elseif( !$is_enrolled ) :
                                 // Not enrolled, logged in
                                 $enroll_url = get_permalink( $course_id );
                                 $button_text = __( 'Enroll Course', 'consultio-child' );
@@ -308,30 +318,8 @@ if ( function_exists( 'sfwd_lms_has_access' ) ) {
                                     $button_text = __( 'Buy This Course', 'consultio-child' );
                                 }
 
-                                // Check if course is linked to a WooCommerce product
-                                if ( class_exists( 'WooCommerce' ) ) {
-                                    $product_id = get_post_meta( $course_id, '_related_product', true );
-                                    if ( empty( $product_id ) ) {
-                                        // Try to find product by course ID relationship
-                                        $products = wc_get_products( array(
-                                            'meta_key'   => '_related_course',
-                                            'meta_value' => $course_id,
-                                            'limit'      => 1,
-                                        ) );
-                                        if ( ! empty( $products ) ) {
-                                            $product_id = $products[0]->get_id();
-                                        }
-                                    }
-                                    
-                                    if ( ! empty( $product_id ) ) {
-                                        $product = wc_get_product( $product_id );
-                                        if ( $product ) {
-                                            $enroll_url = $product->get_permalink();
-                                        }
-                                    }
-                                }
                                 ?>
-                                <a href="<?php echo esc_url( $enroll_url ); ?>" class="btn btn-red btn-enroll-course">
+                                <a href="<?php echo esc_url( $wc_enroll_url ); ?>" class="btn btn-red btn-enroll-course">
                                     <?php echo esc_html( $button_text ); ?>
                                 </a>
                             <?php endif; ?>

@@ -215,3 +215,42 @@ function consultio_child_filter_learndash_courses_archive( $query ) {
     }
 }
 add_action( 'pre_get_posts', 'consultio_child_filter_learndash_courses_archive' );
+
+function get_product_id_by_course_id( $course_id ) {
+    if ( empty( $course_id ) ) {
+        return false;
+    }
+
+    $args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => 1,
+        'fields'         => 'ids',
+        'meta_query'     => array(
+            'relation' => 'OR',
+            array(
+                'key'     => '_related_course',
+                'value'   => '"' . (int) $course_id . '"', // Matches serialized string s:N:"ID";
+                'compare' => 'LIKE'
+            ),
+            array(
+                'key'     => '_related_course',
+                'value'   => ':' . (int) $course_id . ';', // Matches serialized integer i:ID;
+                'compare' => 'LIKE'
+            )
+        )
+    );
+
+    $query = new WP_Query( $args );
+
+    if ( ! empty( $query->posts ) ) {
+        return $query->posts[0]; // Product ID
+    }
+
+    return false;
+}
+
+
+
+
+
+
