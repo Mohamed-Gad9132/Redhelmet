@@ -121,50 +121,22 @@ get_header();
                         $course_price      = '';
                         $course_price_html = '';
                         $is_free           = true;
+                        $price = 0;
                         
-                        // Check if WooCommerce is active and course is a product
+                        // Check if course is linked to a WooCommerce product
                         if ( class_exists( 'WooCommerce' ) ) {
-                            $product_id = get_post_meta( $course_id, '_related_product', true );
-                            if ( empty( $product_id ) ) {
-                                // Try to find product by course ID relationship
-                                $products = wc_get_products( array(
-                                    'meta_key'   => '_related_course',
-                                    'meta_value' => $course_id,
-                                    'limit'      => 1,
-                                ) );
-                                if ( ! empty( $products ) ) {
-                                    $product_id = $products[0]->get_id();
-                                }
-                            }
-                            
-                            if ( ! empty( $product_id ) ) {
-                                $product = wc_get_product( $product_id );
+                            $product_id = get_product_id_by_course_id( $course_id );
+                            if ( $product_id ) {
+                                $wc_enroll_url = wc_get_cart_url() . '?add-to-cart=' . $product_id;
+                                $product    = wc_get_product( $product_id );
                                 if ( $product ) {
+                                    $price = wc_price( $product->get_price() );
                                     $is_free = false;
-                                    $course_price_html = $product->get_price_html();
                                 }
+
                             }
                         }
-                        
-                        // If no WooCommerce product, check LearnDash pricing
-                        if ( $is_free && function_exists( 'learndash_get_course_meta_setting' ) ) {
-                            $course_price_setting = learndash_get_course_meta_setting( $course_id, 'course_price_type' );
-                            if ( $course_price_setting === 'paynow' || $course_price_setting === 'subscribe' ) {
-                                $course_price = learndash_get_course_meta_setting( $course_id, 'course_price' );
-                                if ( ! empty( $course_price ) && $course_price !== '0' ) {
-                                    $is_free = false;
-                                    // Format price - use WooCommerce if available, otherwise format manually
-                                    if ( function_exists( 'wc_price' ) ) {
-                                        $currency_code     = function_exists( 'learndash_get_currency_code' ) ? learndash_get_currency_code() : 'USD';
-                                        $course_price_html = wc_price( $course_price, array( 'currency' => $currency_code ) );
-                                    } else {
-                                        // Fallback: simple price formatting
-                                        $currency_code     = function_exists( 'learndash_get_currency_code' ) ? learndash_get_currency_code() : '$';
-                                        $course_price_html = '<span class="course-price-amount">' . esc_html( $currency_code . number_format( floatval( $course_price ), 2 ) ) . '</span>';
-                                    }
-                                }
-                            }
-                        }
+
                         
                         // Display "Free" if no price found
                         if ( $is_free ) {
@@ -172,7 +144,7 @@ get_header();
                         }
                         ?>
 
-                        <div class="col-md-6 col-lg-4">
+                        <div class="col-md-6 col-lg-4 course-single-card">
                             <div class="course-card" data-aos="fade-up" data-aos-duration="1000">
                                 <a href="<?php the_permalink(); ?>" class="course-image-link">
                                     <div class="course-image-wrapper" style="background-image: url(<?php echo esc_url( $bg_image ); ?>)">
@@ -225,12 +197,14 @@ get_header();
                                     </div>
 
                                     <div class="course-price-enroll">
-                                        <div class="course-price-wrapper">
-                                            <?php echo wp_kses_post( $course_price_html ); ?>
-                                        </div>
-                                        <a href="<?php the_permalink(); ?>" class="btn btn-red btn-enroll-now">
-                                            <?php esc_html_e( 'Enroll Now', 'consultio-child' ); ?>
-                                        </a>
+                                        <?php if($price): ?>
+                                            <div class="course-price-wrapper">
+                                                <?php echo $price; ?>
+                                            </div>
+                                            <a href="<?= $wc_enroll_url ?>" class="btn btn-red btn-enroll-now">
+                                                <?php esc_html_e( 'Enroll Now', 'consultio-child' ); ?>
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

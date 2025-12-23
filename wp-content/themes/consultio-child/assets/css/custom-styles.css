@@ -947,3 +947,19 @@ a.user-login:hover span.link-icon i {
     background: #fff;
     color: var(--red-primary);
 }
+
+.learndash-wrapper.learndash-widget .ld-progress .ld-progress-heading {
+    width: 100%;
+}
+
+.learndash-wrapper .ld-progress .ld-progress-heading .ld-progress-stats {
+    justify-content: space-between;
+}
+
+.course-sidebar-meta{
+    display: none;
+}
+
+.course-single-card{
+    margin-bottom: 2rem;
+}
