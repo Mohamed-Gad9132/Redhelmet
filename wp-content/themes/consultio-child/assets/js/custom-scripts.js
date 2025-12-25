@@ -1,3 +1,43 @@
+jQuery(document).ready(function ($) {
+    jQuery('.project-slider').each(function () {
+        var $slider = jQuery(this);
+        var $arrows = jQuery('<div class="project-slider-arrows"></div>').insertAfter($slider);
+
+        $slider.slick({
+            dots: false,
+            infinite: true,
+            speed: 300,
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            centerMode: true,
+            centerPadding: '0px',
+            autoplay: true,
+            autoplaySpeed: 5000,
+            arrows: true,
+            appendArrows: $arrows,
+            prevArrow: '<button type="button" class="slick-prev"><i class="fac fac-angle-left"></i></button>',
+            nextArrow: '<button type="button" class="slick-next"><i class="fac fac-angle-right"></i></button>',
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3, // still show 3
+                        centerMode: true
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 1,
+                        centerMode: true
+                    }
+                }
+            ]
+        });
+    });
+
+});
+
 const projectsData = {
     '1': {
         title: 'Downtown Commercial Tower',
@@ -235,3 +275,6 @@ if (project) {
     // Update page title
     document.title = `${project.title} - Red Helmet Engineering`;
 }
+
+
+
