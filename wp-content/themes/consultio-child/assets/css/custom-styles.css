@@ -963,3 +963,101 @@ a.user-login:hover span.link-icon i {
 .course-single-card{
     margin-bottom: 2rem;
 }
+
+
+.project-slider {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    flex-flow: wrap;
+}
+
+/* the slides */
+/*.project-slider .slick-slide {*/
+/*    margin: 0 32px;*/
+/*}*/
+
+/* the parent */
+/*.project-slider .slick-list {*/
+/*    margin: 0 -32px;*/
+/*}*/
+
+.project-item {
+    display: flex !important;
+    justify-content: center;
+    align-items: end;
+    height: 350px !important;
+    border-radius: 15px;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.project-slider .slick-center {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.project-slider .project-item:after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: -webkit-linear-gradient(bottom, rgba(110, 30, 26, 0.85) 30%, rgba(212, 57, 51, 0));
+    z-index: -1;
+}
+
+.project-title span {
+    color: #fff !important;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 4rem;
+}
+
+
+.project-slider-arrows {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 0 auto;
+    margin-top: -1.5rem;
+    background: transparent;
+    padding: 1.5rem;
+    position: relative;
+    border-radius: 4px;
+    box-shadow: unset;
+    width: fit-content;
+}
+
+.project-slider-arrows button:before {
+    display: none !important;
+}
+
+.project-slider-arrows .slick-arrow {
+    font-size: 20px;
+    width: 40px;
+    padding: 5px 15px;
+    border-radius: 150px;
+    background: #d43933;
+    color: #fff;
+    height: 40px;
+    text-align: center;
+}
+
+.project-slider-arrows .slick-arrow:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+

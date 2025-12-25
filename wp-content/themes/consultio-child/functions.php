@@ -254,3 +254,58 @@ function get_product_id_by_course_id( $course_id ) {
 
 
 
+
+/**
+ * Enqueue Slick Slider and Project Slider assets.
+ */
+function consultio_child_enqueue_project_slider() {
+    // Slick Slider CSS
+    wp_enqueue_style('slick-carousel', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css');
+    wp_enqueue_style('slick-theme', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css');
+
+
+    // Slick Slider JS
+    wp_enqueue_script('slick-carousel', 'https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js', array('jquery'), '1.8.1', true);
+
+}
+add_action('wp_enqueue_scripts', 'consultio_child_enqueue_project_slider');
+
+/**
+ * Project Slider Shortcode
+ */
+function consultio_child_project_slider_shortcode($atts) {
+    ob_start();
+
+    $args = array(
+        'post_type' => 'project',
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
+    );
+
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) : ?>
+        <div class="project-slider">
+            <?php while ($query->have_posts()) : $query->the_post(); ?>
+                <?php
+                    $post_id = get_the_ID();
+                    $project_image = get_field('project_main_image', $post_id);
+                    if( empty($project_image) || !isset($project_image) ):
+                        $project_image = get_stylesheet_directory_uri() . '/assets/images/redhelmet-logo-main.png';
+                    endif;
+                ?>
+                <a class="project-item" style="background-image: url('<?= $project_image ?>')" href="<?php the_permalink(); ?>">
+                    <div class="project-item-inner">
+                        <h3 class="project-title">
+                            <span><?php the_title(); ?></span>
+                        </h3>
+                    </div>
+                </a>
+            <?php endwhile; ?>
+        </div>
+    <?php endif;
+    wp_reset_postdata();
+
+    return ob_get_clean();
+}
+add_shortcode('project_slider', 'consultio_child_project_slider_shortcode');
