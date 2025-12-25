@@ -36,6 +36,13 @@ jQuery(document).ready(function ($) {
         });
     });
 
+    if (jQuery('.trp-shortcode-switcher__wrapper').length) {
+        jQuery('.trp-shortcode-switcher__wrapper')
+            .appendTo('#ct-header');
+
+    }
+
+
 });
 
 const projectsData = {

@@ -1061,3 +1061,7 @@ a.user-login:hover span.link-icon i {
     border-color: #000;
 }
 
+.trp-shortcode-switcher__wrapper {
+    position: absolute;
+    right: 0;
+}
