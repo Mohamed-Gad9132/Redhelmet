@@ -1062,6 +1062,6 @@ a.user-login:hover span.link-icon i {
 }
 
 .trp-shortcode-switcher__wrapper {
-    position: absolute;
-    right: 0;
+    position: absolute !important;
+    right: 1rem;
 }
