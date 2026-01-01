@@ -18,12 +18,6 @@ get_header();
                     <h1 data-aos="fade-up" data-aos-duration="900">
                         Fire Engineering Learning Hub
                     </h1>
-                    <p data-aos="fade-up" data-aos-duration="900">
-                        At Red Helmet Engineering Academy, we equip fire engineers with the practical knowledge,
-                        design principles, and emergency strategies required to protect lives and property.
-                        Explore our growing library of online and classroom-based courses designed for real projects,
-                        real codes, and real-world fire safety challenges.
-                    </p>
                 </div>
             </div>
         </div>
@@ -31,11 +25,30 @@ get_header();
 
     <!-- Courses Grid -->
     <section class="py-5 courses-archive">
-        <div class="container-fluid d-flex gap-5">
+        <div class="container d-flex gap-5">
 
             <?php
             // Get current filter values from query string.
-            $selected_category = isset( $_GET['course_cat'] ) ? sanitize_text_field( wp_unslash( $_GET['course_cat'] ) ) : '';
+            $selected_category = array();
+
+            // Handle 'course_cat' (clean string)
+            if ( isset( $_GET['course_cat'] ) && is_string( $_GET['course_cat'] ) ) {
+                $raw_cat = wp_unslash( $_GET['course_cat'] );
+                if ( strpos( $raw_cat, ',' ) !== false ) {
+                     $selected_category = array_map( 'sanitize_text_field', explode( ',', $raw_cat ) );
+                } else {
+                     $selected_category = array( sanitize_text_field( $raw_cat ) );
+                }
+            }
+            
+            // Handle 'course_cat_arr' (fallback array from unchecked JS form submit)
+            if ( empty( $selected_category ) && isset( $_GET['course_cat_arr'] ) ) {
+                 $selected_category = array_map( 'sanitize_text_field', (array) wp_unslash( $_GET['course_cat_arr'] ) );
+            }
+            // Allow legacy 'course_cat[]' array if it accidentally comes through
+             if ( empty( $selected_category ) && isset( $_GET['course_cat'] ) && is_array( $_GET['course_cat'] ) ) {
+                 $selected_category = array_map( 'sanitize_text_field', (array) wp_unslash( $_GET['course_cat'] ) );
+            }
             $selected_level    = isset( $_GET['course_level'] ) ? sanitize_text_field( wp_unslash( $_GET['course_level'] ) ) : '';
             $selected_format   = isset( $_GET['delivery_format'] ) ? sanitize_text_field( wp_unslash( $_GET['delivery_format'] ) ) : '';
 
@@ -44,7 +57,7 @@ get_header();
                 ? get_terms(
                     array(
                         'taxonomy'   => 'ld_course_category',
-                        'hide_empty' => true,
+                        'hide_empty' => false,
                     )
                 )
                 : array();
@@ -54,21 +67,81 @@ get_header();
                 <form method="get" class="courses-filter-form">
                     <div class="row g-3 align-items-end justify-content-between gap-5">
                         <div class="col-md-12">
-                            <label for="course_cat" class="form-label">Topic</label>
-                            <select id="course_cat" name="course_cat" class="form-select">
-                                <option value=""><?php esc_html_e( 'All topics', 'consultio-child' ); ?></option>
-                                <?php if ( ! empty( $course_categories ) && ! is_wp_error( $course_categories ) ) : ?>
-                                    <?php foreach ( $course_categories as $cat ) : ?>
-                                        <option value="<?php echo esc_attr( $cat->slug ); ?>" <?php selected( $selected_category, $cat->slug ); ?>>
-                                            <?php echo esc_html( $cat->name ); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </select>
+                            <label class="form-label"> Course Categories </label>
+                            <div class="course-category-filter">
+                                <?php
+                                if ( ! empty( $course_categories ) && ! is_wp_error( $course_categories ) ) {
+
+
+                                    // Hidden input for clean URL
+                                    $initial_cats_str = implode(',', $selected_category); // Use the processed $selected_category from top
+                                    echo '<input type="hidden" name="course_cat" id="course_cat_hidden" value="' . esc_attr($initial_cats_str) . '">';
+
+                                    // Organize categories by parent for efficient recursion
+                                    $cats_by_parent = array();
+                                    foreach ( $course_categories as $cat ) {
+                                        $cats_by_parent[ $cat->parent ][] = $cat;
+                                    }
+
+                                    // Recursive function to check for selected descendants
+                                    function consultio_child_has_selected_descendant( $parent_id, $cats_map, $selected_slugs ) {
+                                        if ( ! isset( $cats_map[ $parent_id ] ) ) {
+                                            return false;
+                                        }
+                                        foreach ( $cats_map[ $parent_id ] as $child ) {
+                                            if ( in_array( $child->slug, $selected_slugs ) ) {
+                                                return true;
+                                            }
+                                            if ( consultio_child_has_selected_descendant( $child->term_id, $cats_map, $selected_slugs ) ) {
+                                                return true;
+                                            }
+                                        }
+                                        return false;
+                                    }
+
+                                    // Recursive display function
+                                    function consultio_child_display_cats_hierarchical( $parent_id, $cats_map, $selected_slugs ) {
+                                        if ( ! isset( $cats_map[ $parent_id ] ) ) {
+                                            return;
+                                        }
+
+                                        foreach ( $cats_map[ $parent_id ] as $cat ) {
+                                            $has_children = isset( $cats_map[ $cat->term_id ] );
+                                            $is_selected = in_array( $cat->slug, $selected_slugs );
+                                            $has_selected_child = consultio_child_has_selected_descendant( $cat->term_id, $cats_map, $selected_slugs );
+                                            $is_expanded = $has_selected_child; 
+                                            $toggle_symbol = $is_expanded ? '-' : '+';
+                                            
+                                            echo '<div class="cat-item-wrap">';
+                                            echo '<label class="filter-checkbox-item">';
+                                            
+                                            if ( $has_children ) {
+                                                echo '<span class="cat-toggle">' . $toggle_symbol . '</span>';
+                                            } else {
+                                                 echo '<span class="cat-spacer"></span>';
+                                            }
+                                            
+                                            echo '<input type="checkbox" class="course-cat-checkbox" value="' . esc_attr( $cat->slug ) . '" ' . ( $is_selected ? 'checked' : '' ) . '>';
+                                            echo '<span>' . esc_html( $cat->name ) . '</span>';
+                                            echo '</label>';
+
+                                            if ( $has_children ) {
+                                                echo '<div class="cat-children ' . ( $is_expanded ? 'expanded' : '' ) . '">';
+                                                consultio_child_display_cats_hierarchical( $cat->term_id, $cats_map, $selected_slugs );
+                                                echo '</div>';
+                                            }
+                                            echo '</div>';
+                                        }
+                                    }
+
+                                    consultio_child_display_cats_hierarchical( 0, $cats_by_parent, $selected_category );
+                                }
+                                ?>
+                            </div>
                         </div>
 
 
-                        <div class="col-md-12 d-flex gap-2 justify-content-md-end">
+                        <div class="col-md-12 d-flex filter-buttons">
                             <button type="submit" class="btn btn-red w-100 filter-submit">
                                 <?php esc_html_e( 'Filter', 'consultio-child' ); ?>
                             </button>
@@ -187,14 +260,14 @@ get_header();
                                     </div>
 
                                     <div class="course-price-enroll">
-                                        <?php if($price): ?>
-                                            <div class="course-price-wrapper">
+                                        <?php //if($price): ?>
+                                            <div class="course-price-wrapper d-none">
                                                 <?php echo $price; ?>
                                             </div>
                                             <a href="<?= get_the_permalink() ?>" class="btn btn-red btn-enroll-now">
                                                 <?php esc_html_e( 'View More', 'consultio-child' ); ?>
                                             </a>
-                                        <?php endif; ?>
+                                        <?php //endif; ?>
                                     </div>
                                 </div>
                             </div>
@@ -213,7 +286,7 @@ get_header();
                     </div>
 
                 <?php else : ?>
-                    <div class="col-12">
+                    <div class="col-12 text-center mt-5">
                         <p><?php esc_html_e( 'No courses found.', 'consultio-child' ); ?></p>
                     </div>
                 <?php endif; ?>

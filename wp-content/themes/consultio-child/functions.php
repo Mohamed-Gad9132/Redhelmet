@@ -58,6 +58,15 @@ function consultio_enqueue_scripts()
         true
     );
 
+    // Enqueue script for course category filtering.
+    wp_enqueue_script(
+        'consultio-child-course-filter',
+        get_stylesheet_directory_uri() . '/assets/js/filter-course-categories.js',
+        array('jquery'),
+        rand(0,10),
+        true
+    );
+
     // AOS animation library script + init.
     wp_enqueue_script(
         'consultio-child-aos',
@@ -181,10 +190,12 @@ function consultio_child_filter_learndash_courses_archive( $query ) {
 
     // Filter by LearnDash course category taxonomy if set.
     if ( isset( $_GET['course_cat'] ) && $_GET['course_cat'] !== '' && taxonomy_exists( 'ld_course_category' ) ) {
+        $course_cats = array_map( 'sanitize_text_field', explode( ',', wp_unslash( $_GET['course_cat'] ) ) );
         $tax_query[] = array(
             'taxonomy' => 'ld_course_category',
             'field'    => 'slug',
-            'terms'    => sanitize_text_field( wp_unslash( $_GET['course_cat'] ) ),
+            'terms'    => $course_cats,
+            'operator' => 'IN',
         );
     }
 

@@ -43,6 +43,25 @@ jQuery(document).ready(function ($) {
     }
 
 
+    /* JS for Toggling filter */
+    document.addEventListener("DOMContentLoaded", function() {
+        // Toggle functionality
+        document.querySelectorAll(".cat-toggle").forEach(function(btn) {
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var container = this.closest(".cat-item-wrap").querySelector(".cat-children");
+                if(container) {
+                    container.classList.toggle("expanded");
+                    this.textContent = container.classList.contains("expanded") ? "-" : "+";
+                }
+            });
+        });
+
+
+    });
+
+
 });
 
 const projectsData = {
