@@ -31,7 +31,7 @@ get_header();
 
     <!-- Courses Grid -->
     <section class="py-5 courses-archive">
-        <div class="container">
+        <div class="container-fluid d-flex gap-5">
 
             <?php
             // Get current filter values from query string.
@@ -50,10 +50,10 @@ get_header();
                 : array();
             ?>
 
-            <div class="courses-filter-bar mb-4" data-aos="fade-up" data-aos-duration="700">
+            <div class="courses-filter-bar mb-4 col-md-4" data-aos="fade-up" data-aos-duration="700">
                 <form method="get" class="courses-filter-form">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-4">
+                    <div class="row g-3 align-items-end justify-content-between gap-5">
+                        <div class="col-md-12">
                             <label for="course_cat" class="form-label">Topic</label>
                             <select id="course_cat" name="course_cat" class="form-select">
                                 <option value=""><?php esc_html_e( 'All topics', 'consultio-child' ); ?></option>
@@ -67,19 +67,9 @@ get_header();
                             </select>
                         </div>
 
-                        <div class="col-md-4">
-                            <label for="course_level" class="form-label">Level</label>
-                            <select id="course_level" name="course_level" class="form-select">
-                                <option value=""><?php esc_html_e( 'All levels', 'consultio-child' ); ?></option>
-                                <option value="Beginner" <?php selected( $selected_level, 'Beginner' ); ?>>Beginner</option>
-                                <option value="Intermediate" <?php selected( $selected_level, 'Intermediate' ); ?>>Intermediate</option>
-                                <option value="Advanced" <?php selected( $selected_level, 'Advanced' ); ?>>Advanced</option>
-                            </select>
-                        </div>
 
-
-                        <div class="col-md-4 d-flex gap-2 justify-content-md-end">
-                            <button type="submit" class="btn btn-red w-100">
+                        <div class="col-md-12 d-flex gap-2 justify-content-md-end">
+                            <button type="submit" class="btn btn-red w-100 filter-submit">
                                 <?php esc_html_e( 'Filter', 'consultio-child' ); ?>
                             </button>
                             <?php if ( $selected_category || $selected_level || $selected_format ) : ?>
@@ -92,7 +82,7 @@ get_header();
                 </form>
             </div>
 
-            <div class="row g-4">
+            <div class="row g-4 col-md-8">
                 <?php if ( have_posts() ) : ?>
                     <?php while ( have_posts() ) : the_post(); ?>
                         <?php
@@ -144,7 +134,7 @@ get_header();
                         }
                         ?>
 
-                        <div class="col-md-6 col-lg-4 course-single-card">
+                        <div class="course-single-card">
                             <div class="course-card" data-aos="fade-up" data-aos-duration="1000">
                                 <a href="<?php the_permalink(); ?>" class="course-image-link">
                                     <div class="course-image-wrapper" style="background-image: url(<?php echo esc_url( $bg_image ); ?>)">
@@ -161,7 +151,7 @@ get_header();
                                         </div>
                                     </div>
                                 </a>
-                                <div>
+                                <div class="course-info-wrapper">
                                     <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
                                         <?php if ( $course_level ) : ?>
                                             <span class="course-badge-level">
@@ -201,8 +191,8 @@ get_header();
                                             <div class="course-price-wrapper">
                                                 <?php echo $price; ?>
                                             </div>
-                                            <a href="<?= $wc_enroll_url ?>" class="btn btn-red btn-enroll-now">
-                                                <?php esc_html_e( 'Enroll Now', 'consultio-child' ); ?>
+                                            <a href="<?= get_the_permalink() ?>" class="btn btn-red btn-enroll-now">
+                                                <?php esc_html_e( 'View More', 'consultio-child' ); ?>
                                             </a>
                                         <?php endif; ?>
                                     </div>
