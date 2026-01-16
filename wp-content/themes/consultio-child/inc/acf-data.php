@@ -498,6 +498,135 @@ add_action( 'acf/include_fields', function() {
         'description' => '',
         'show_in_rest' => 0,
     ) );
+
+    $user_choices = array();
+    $users = get_users();
+    if ( $users ) {
+        foreach ( $users as $user ) {
+            $first_name = $user->first_name;
+            $last_name = $user->last_name;
+            $email = $user->user_email;
+            $label = trim( $first_name . ' ' . $last_name );
+            if ( empty( $label ) ) {
+                $label = $user->display_name;
+            }
+            $label .= ' - ' . $email;
+            $user_choices[ $user->ID ] = $label;
+        }
+    }
+
+    acf_add_local_field_group( array(
+        'key' => 'group_course_active_settings',
+        'title' => 'Extra Course Settings',
+        'fields' => array(
+            array(
+                'key' => 'field_is_course_active',
+                'label' => 'This course is active now?',
+                'name' => 'is_course_active',
+                'type' => 'true_false',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'message' => '',
+                'default_value' => 0,
+                'ui' => 1,
+            ),
+            array(
+                'key' => 'field_course_start_date',
+                'label' => 'Start Date',
+                'name' => 'course_start_date',
+                'type' => 'date_picker',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => array(
+                    array(
+                        array(
+                            'field' => 'field_is_course_active',
+                            'operator' => '==',
+                            'value' => '1',
+                        ),
+                    ),
+                ),
+                'wrapper' => array(
+                    'width' => '50',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'display_format' => 'd/m/Y',
+                'return_format' => 'd/m/Y',
+                'first_day' => 1,
+            ),
+            array(
+                'key' => 'field_course_end_date',
+                'label' => 'End Date',
+                'name' => 'course_end_date',
+                'type' => 'date_picker',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => array(
+                    array(
+                        array(
+                            'field' => 'field_is_course_active',
+                            'operator' => '==',
+                            'value' => '1',
+                        ),
+                    ),
+                ),
+                'wrapper' => array(
+                    'width' => '50',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'display_format' => 'd/m/Y',
+                'return_format' => 'd/m/Y',
+                'first_day' => 1,
+            ),
+            array(
+                'key' => 'field_course_assigned_users',
+                'label' => 'Assign Users',
+                'name' => 'course_assigned_users',
+                'type' => 'select',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'choices' => $user_choices,
+                'default_value' => array(),
+                'allow_null' => 0,
+                'multiple' => 1,
+                'ui' => 1,
+                'ajax' => 0,
+                'return_format' => 'value',
+                'placeholder' => '',
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'post_type',
+                    'operator' => '==',
+                    'value' => 'sfwd-courses',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ) );
 } );
 
 
